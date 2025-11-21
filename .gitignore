@@ -22,6 +22,7 @@ node_modules/
 *.sh~
 *.bak
 *.swp
+*.ps1
 
 # VS Code
 .vscode/
@@ -30,3 +31,9 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local error logs
+errors.txt
+
+# Build/automation files you don’t want public
+Makefile
