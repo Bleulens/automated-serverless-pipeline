@@ -18,6 +18,12 @@ __pycache__/
 node_modules/
 *.log
 
+# Python build artifacts
+*.egg-info/
+*.egg
+dist/
+build/
+
 # Scripts
 *.sh~
 *.bak
@@ -37,3 +43,13 @@ errors.txt
 
 # Build/automation files you don’t want public
 Makefile
+
+# Python virtual environment
+venv/
+
+# Environment files
+.env
+
+# Temp files
+*.tmp
+*.temp
