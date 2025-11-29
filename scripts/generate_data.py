@@ -43,16 +43,68 @@ payment_methods = ["credit_card", "paypal", "bank_transfer", "gift_card"]
 # Order statuses
 order_statuses = ["pending", "shipped", "delivered", "cancelled"]
 
-# Step 3: Function to generate a single order
-#   - Create a unique order_id
-#   - Pick a random customer
-#   - Pick a random date
-#   - Generate a random number of items (1–5)
-#       - For each item, pick a product, quantity, and price
-#   - Calculate total_amount
-#   - Pick a random payment method
-#   - Pick a random status
-#   - Return the order as a dictionary (JSON object)
+fake = Faker()
+
+
+# Function to generate just one order
+def generate_order(fake):
+    """
+    Generate a single mock e-commerce order.
+    Returns a dictionary representing the order.
+    """
+    # Unique order ID
+    order_id = str(uuid.uuid4())
+
+    # Random customer details
+    customer = {
+        "customer_id": str(uuid.uuid4()),
+        "name": fake.name(),
+        "email": fake.email(),
+        "address": fake.address(),
+    }
+
+    # Random order date (within last 365 days)
+    order_date = fake.date_time_between(start_date="-365d", end_date="now").isoformat()
+
+    # Random items (1–5)
+    items = []
+    num_items = random.randint(1, 5)
+    for _ in range(num_items):
+        product = random.choice(products)
+        quantity = random.randint(1, 3)
+        item_total = round(product["price"] * quantity, 2)
+        items.append(
+            {
+                "product_name": product["name"],
+                "unit_price": product["price"],
+                "quantity": quantity,
+                "item_total": item_total,
+            }
+        )
+
+    # Calculate total amount
+    total_amount = round(sum(item["item_total"] for item in items), 2)
+
+    # Random payment method and status
+    payment_method = random.choice(payment_methods)
+    status = random.choice(order_statuses)
+
+    # Return order dictionary
+    return {
+        "order_id": order_id,
+        "customer": customer,
+        "order_date": order_date,
+        "items": items,
+        "total_amount": total_amount,
+        "payment_method": payment_method,
+        "status": status,
+    }
+
+
+if __name__ == "__main__":
+    fake = Faker()
+    order = generate_order(fake)
+    print(json.dumps(order, indent=2))
 
 # Step 4: Loop to generate N orders
 #   - Initialize an empty list
