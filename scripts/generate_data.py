@@ -15,10 +15,12 @@ Usage:
 
 # Imports
 # Standard library
+import argparse  # for command-line arguments
 import random  # for random choices, prices, quantities
 import json  # for exporting data to JSON
 import datetime  # for realistic timestamps
 import uuid  # for unique IDs
+import os  # for file operations
 
 # External libraries
 from faker import Faker  # for realistic names, addresses, emails
@@ -101,20 +103,38 @@ def generate_order(fake):
     }
 
 
+# Loop to generate N orders
 if __name__ == "__main__":
+    import argparse
+
+    # Command-line arguments
+    parser = argparse.ArgumentParser(description="Generate mock e-commerce orders")
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=100,  # fallback if not provided
+        help="Number of orders to generate",
+    )
+    parser.add_argument(
+        "--test",
+        action="store_true",
+        help="Generate and print a single test order instead of saving many",
+    )
+    args = parser.parse_args()
+
     fake = Faker()
-    order = generate_order(fake)
-    print(json.dumps(order, indent=2))
 
-# Step 4: Loop to generate N orders
-#   - Initialize an empty list
-#   - For i in range(N):
-#       - Call the order generator function
-#       - Append the result to the list
+    if args.test:
+        # Run a single test order
+        order = generate_order(fake)
+        print(json.dumps(order, indent=2))
+    else:
+        # Loop to generate N orders
+        orders = [generate_order(fake) for _ in range(args.count)]
 
-# Step 5: Write the list of orders to a JSON file
-#   - Open a file in the /data folder (e.g., "orders.json")
-#   - Use json.dump() to write the list with indentation
+        # Save to JSON file
+        os.makedirs("data", exist_ok=True)
+        with open("data/orders.json", "w") as f:
+            json.dump(orders, f, indent=2)
 
-# Step 6: Print confirmation
-#   - Example: "Generated 500 orders and saved to data/orders.json"
+        print(f"Generated {args.count} orders and saved to data/orders.json")
