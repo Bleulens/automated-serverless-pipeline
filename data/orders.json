@@ -1,0 +1,143 @@
+[
+  {
+    "order_id": "7ee3bb39-c07c-499d-a3b7-b9b2e39e5e85",
+    "customer": {
+      "customer_id": "c93cacec-d4f7-4848-b53d-74b7ef6f1e49",
+      "name": "Emily Johnson",
+      "email": "suzanne84@example.net",
+      "address": "833 Harper Well\nNew Dawn, MD 84991"
+    },
+    "order_date": "2025-02-12T17:50:00.132968",
+    "items": [
+      {
+        "product_name": "Laptop",
+        "unit_price": 999.99,
+        "quantity": 2,
+        "item_total": 1999.98
+      }
+    ],
+    "total_amount": 1999.98,
+    "payment_method": "gift_card",
+    "status": "delivered"
+  },
+  {
+    "order_id": "4ea3a68b-662f-425e-9dad-96f223f32648",
+    "customer": {
+      "customer_id": "d576e240-8729-44e6-a0e2-0ce3112a94b2",
+      "name": "Miss Jasmine Fernandez",
+      "email": "fitzgeraldchristopher@example.com",
+      "address": "91019 Galvan Shoal\nKylemouth, GU 61879"
+    },
+    "order_date": "2024-12-16T22:32:48.138142",
+    "items": [
+      {
+        "product_name": "Keyboard",
+        "unit_price": 89.99,
+        "quantity": 2,
+        "item_total": 179.98
+      },
+      {
+        "product_name": "Headphones",
+        "unit_price": 199.99,
+        "quantity": 1,
+        "item_total": 199.99
+      },
+      {
+        "product_name": "Laptop",
+        "unit_price": 999.99,
+        "quantity": 1,
+        "item_total": 999.99
+      }
+    ],
+    "total_amount": 1379.96,
+    "payment_method": "credit_card",
+    "status": "delivered"
+  },
+  {
+    "order_id": "0613c5c2-8317-4dc0-b08c-4d60b86a3f3f",
+    "customer": {
+      "customer_id": "35b47a08-21bd-4c5b-bb86-0f7e670f289e",
+      "name": "Deanna Nunez",
+      "email": "davidsnyder@example.com",
+      "address": "055 Jill Neck Apt. 151\nWest Ronald, MD 28096"
+    },
+    "order_date": "2025-07-17T20:26:31.443244",
+    "items": [
+      {
+        "product_name": "Keyboard",
+        "unit_price": 89.99,
+        "quantity": 3,
+        "item_total": 269.97
+      }
+    ],
+    "total_amount": 269.97,
+    "payment_method": "credit_card",
+    "status": "delivered"
+  },
+  {
+    "order_id": "fd4928b3-5719-4620-a117-6a024882cf01",
+    "customer": {
+      "customer_id": "cc8960fe-d16e-4ff3-8444-bf08f2558c6d",
+      "name": "Heidi Smith",
+      "email": "maryhernandez@example.org",
+      "address": "7579 Shirley Summit\nNew Tanyamouth, UT 23412"
+    },
+    "order_date": "2025-02-16T14:08:33.802256",
+    "items": [
+      {
+        "product_name": "Laptop",
+        "unit_price": 999.99,
+        "quantity": 3,
+        "item_total": 2999.97
+      }
+    ],
+    "total_amount": 2999.97,
+    "payment_method": "credit_card",
+    "status": "pending"
+  },
+  {
+    "order_id": "c598133c-be78-4f9f-b12a-68ba7a28ba3f",
+    "customer": {
+      "customer_id": "0af5f7e3-e7e9-43fd-823d-bc12eb200039",
+      "name": "Kimberly Boyle",
+      "email": "angelaswanson@example.com",
+      "address": "4269 Gomez Forge\nLake Darleneborough, NE 63426"
+    },
+    "order_date": "2025-11-16T05:46:30.543186",
+    "items": [
+      {
+        "product_name": "Keyboard",
+        "unit_price": 89.99,
+        "quantity": 3,
+        "item_total": 269.97
+      },
+      {
+        "product_name": "Smartphone",
+        "unit_price": 699.99,
+        "quantity": 2,
+        "item_total": 1399.98
+      },
+      {
+        "product_name": "Laptop",
+        "unit_price": 999.99,
+        "quantity": 3,
+        "item_total": 2999.97
+      },
+      {
+        "product_name": "Monitor",
+        "unit_price": 249.99,
+        "quantity": 3,
+        "item_total": 749.97
+      },
+      {
+        "product_name": "Laptop",
+        "unit_price": 999.99,
+        "quantity": 1,
+        "item_total": 999.99
+      }
+    ],
+    "total_amount": 6419.88,
+    "payment_method": "bank_transfer",
+    "status": "delivered"
+  }
+]
