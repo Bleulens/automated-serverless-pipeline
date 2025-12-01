@@ -53,3 +53,6 @@ venv/
 # Temp files
 *.tmp
 *.temp
+
+# Project file structure
+folder-structure.txt
