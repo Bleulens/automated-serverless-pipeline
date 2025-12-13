@@ -1,8 +1,23 @@
-def handler(event, context):
-    # Step 1: Extract bucket and key from the event
-    record = event["Records"][0]
-    bucket = record["s3"]["bucket"]["name"]
-    key = record["s3"]["object"]["key"]
+# Handler Structure
+# Step 1: parse_event
+# Step 2: read_from_s3
+# Step 3: transform_data
+# Step 4: write_processed_file
+# Step 5: build_response
 
-    # Step 2: For now, just log them so you know it works
-    print(f"Bucket: {bucket}, Key: {key}")
+
+def handler(event, context):
+    # Step 1: Parse the event
+    bucket, key = parse_event(event)
+
+    # Step 2: Read the raw file from S3
+    raw_data = read_from_s3(bucket, key)
+
+    # Step 3: Transform the data
+    transformed_data = transform_data(raw_data)
+
+    # Step 4: Write the processed file
+    output_key = write_processed_file(transformed_data, key)
+
+    # Step 5: Build and return the final response
+    return build_response(output_key)
