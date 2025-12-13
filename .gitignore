@@ -56,3 +56,6 @@ venv/
 
 # Project file structure
 folder-structure.txt
+
+# sudo files
+sudo-in-file.txt
