@@ -2,45 +2,104 @@
 index.py
 
 Lambda entrypoint for the automated serverless pipeline.
-Responsible for:
-- Receiving the S3 event
-- Extracting bucket and key
-- Coordinating read → transform → write
-- Returning a structured response
+Coordinates:
+- Event parsing
+- S3 read
+- Data transformation
+- S3 writes (multiple CSVs)
+- Structured response building
 """
 
-from .s3_utils import read_from_s3, write_processed_file
-from .transform import transform_data
-from .errors import InvalidEventError
+import json
+import logging
 
-# Handler Structure
-# Step 1: parse_event
-# Step 2: read_from_s3
-# Step 3: transform_data
-# Step 4: write_processed_file
-# Step 5: build_response
+from .s3_utils import write_processed_file, read_from_s3
+from .transform import transform_data
+from .errors import (
+    PipelineError,
+    InvalidEventError,
+    S3ReadError,
+    S3WriteError,
+    TransformError,
+    SchemaValidationError,
+)
+from . import config
+
+# Configure logging
+logger = logging.getLogger()
+logger.setLevel(config.LOG_LEVEL)
 
 
 def handler(event, context):
-    # Step 1: Parse the event
-    bucket, key = parse_event(event)
+    request_id = context.aws_request_id
 
-    # Step 2: Read the raw file from S3
-    raw_data = read_from_s3(bucket, key)
+    # Ensure event is JSON-serializable for logging
+    safe_event = json.loads(json.dumps(event))
 
-    # Step 3: Transform the data
-    transformed_data = transform_data(raw_data)
+    logger.info(
+        {"event": "LAMBDA_START", "request_id": request_id, "raw_event": safe_event}
+    )
 
-    # Step 4: Write the processed file
-    output_key = write_processed_file(transformed_data, key)
+    try:
+        # Step 1: Parse event
+        bucket, key = parse_event(event)
+        logger.info(
+            {
+                "event": "EVENT_PARSED",
+                "request_id": request_id,
+                "bucket": bucket,
+                "key": key,
+            }
+        )
 
-    # Step 5: Build and return the final response
-    return build_response(output_key)
+        # Step 2: Read raw data
+        raw_data = read_from_s3(bucket, key)
+        logger.info(
+            {
+                "event": "S3_READ_SUCCESS",
+                "request_id": request_id,
+                "bytes_read": len(raw_data),
+            }
+        )
+
+        # Step 3: Transform
+        transformed_data = transform_data(raw_data)
+        logger.info(
+            {
+                "event": "TRANSFORM_SUCCESS",
+                "request_id": request_id,
+                "tables": list(transformed_data.keys()),
+            }
+        )
+
+        # Step 4: Write each CSV file
+        output_keys = []
+        for name, csv_data in transformed_data.items():
+            filename = f"{name}.csv"
+            output_key = write_processed_file(csv_data, filename)
+            output_keys.append(output_key)
+
+            logger.info(
+                {
+                    "event": "S3_WRITE_SUCCESS",
+                    "request_id": request_id,
+                    "output_key": output_key,
+                }
+            )
+
+        # Step 5: Respond
+        return build_response(200, {"processed_files": output_keys})
+
+    except Exception as e:
+        logger.exception(
+            {"event": "UNEXPECTED_ERROR", "request_id": request_id, "error": str(e)}
+        )
+        return build_response(500, {"error": str(e)})
 
 
 def parse_event(event):
     """
-    Extract and validate bucket and key from the event.
+    Extract bucket and key from the S3 event.
     """
     try:
         record = event["Records"][0]
@@ -51,9 +110,11 @@ def parse_event(event):
         raise InvalidEventError(f"Malformed S3 event structure: {e}")
 
 
-def build_response(output_key):
+def build_response(status_code, body):
     """
-    Build the final Lambda response payload.
+    Build a structured Lambda response.
     """
-    response = {"statusCode": 200, "body": f"Processed file written to {output_key}"}
-    return response
+    return {
+        "statusCode": status_code,
+        "body": json.dumps(body),
+    }
