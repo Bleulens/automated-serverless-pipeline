@@ -13,7 +13,7 @@ This project demonstrates real platform engineering practices: infrastructure‑
 
 # 📖 Overview
 
-## ✅ What this project solves
+## What this project solves
 
 Data ingestion and transformation workflows are often:
 
@@ -30,7 +30,7 @@ This pipeline provides a repeatable, automated, serverless pattern for:
 - storing processed outputs
 - monitoring execution with structured logs
 
-## ✅ Why this exists
+## Why this exists
 
 This project is a hands‑on demonstration of:
 
@@ -132,15 +132,15 @@ _High‑level architecture of the automated serverless pipeline._
 
 # 🔍 How the Lambda Works
 
-## ✅ 1. Event Parsing
+## 1. Event Parsing
 
 Extracts bucket + key from the S3 event.
 
-## ✅ 2. S3 Read
+## 2. S3 Read
 
 Reads raw JSON using `read_from_s3`.
 
-## ✅ 3. Transformation
+## 3. Transformation
 
 `transform_data()`:
 
@@ -149,13 +149,13 @@ Reads raw JSON using `read_from_s3`.
 - extracts customers → customers.csv
 - expands items → items.csv
 
-## ✅ 4. S3 Write
+## 4. S3 Write
 
 Each CSV is written to:
 
       processed/<table>.csv
 
-## ✅ 5. Structured Logging
+## 5. Structured Logging
 
 Every log entry includes:
 
