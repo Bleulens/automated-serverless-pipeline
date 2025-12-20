@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="28.2.0">
+  <diagram name="AWS Serverless Pipeline" id="OhULlngfymlCA3y8mRaw">
+    <mxGraphModel dx="1098" dy="700" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_35EO40taj00l1bA_ze5-29" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.webicons.json;gradientColor=#DFDEDE" vertex="1" parent="1">
+          <mxGeometry x="40" y="139" width="102.4" height="102.4" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-30" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.bucket;" vertex="1" parent="1">
+          <mxGeometry x="260" y="156.2" width="75" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="_35EO40taj00l1bA_ze5-31" target="_35EO40taj00l1bA_ze5-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-31" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.lambda_function;" vertex="1" parent="1">
+          <mxGeometry x="480" y="146.2" width="88" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="_35EO40taj00l1bA_ze5-32" target="_35EO40taj00l1bA_ze5-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-32" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.bucket;" vertex="1" parent="1">
+          <mxGeometry x="730" y="151.2" width="75" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-34" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.cloudwatch_logs;" vertex="1" parent="1">
+          <mxGeometry x="920" y="161.2" width="78" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-37" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Write CSV&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="151.2" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.023;entryY=0.566;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="337.01336087341383" y="189.70000000000005" as="sourcePoint" />
+            <mxPoint x="479.99704692795876" y="190.50800000000004" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-42" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Event&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="151.2" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.133;entryY=0.436;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="_35EO40taj00l1bA_ze5-29" target="_35EO40taj00l1bA_ze5-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-44" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Put Object&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="156.2" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-46" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Logs&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="820" y="156.2" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-47" value="Ingest Bucket" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="257.5" y="238" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-48" value="Lambda Function" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="467" y="241.39999999999998" width="106" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-49" value="Processed Bucket" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="710.5" y="238" width="109.5" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-50" value="CloudWatch" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="913" y="234.2" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="_35EO40taj00l1bA_ze5-54" value="Raw Json" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="48" y="241.4" width="80" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

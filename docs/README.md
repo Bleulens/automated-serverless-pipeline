@@ -1,247 +1,259 @@
-# 📦 Automated Serverless Pipeline
+# 🧩 Internal Engineering Documentation
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Terraform](https://img.shields.io/badge/Terraform-v1.5%2B-623CE4?logo=terraform)
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
-![AWS](https://img.shields.io/badge/AWS-Lambda%20%7C%20S3%20%7C%20CloudWatch-orange?logo=amazon-aws)
-
-A fully automated, event‑driven serverless pipeline that ingests raw JSON data, transforms it into normalized CSV tables, and stores the results in S3 — all provisioned with Terraform and validated with a complete pytest suite.
-
-This project demonstrates real platform engineering practices: infrastructure‑as‑code, event‑driven compute, structured logging, modular Python design, and automated testing.
+A deeper, engineering‑focused look at the architecture, decisions, workflows, and reasoning behind the Automated Serverless Pipeline project.  
+This document complements the top‑level README by explaining **how** the system works and **why** it was built this way.
 
 ---
 
-# 📖 Overview
+# 📐 Architecture (Engineering View)
 
-## ✅ What this project solves
+This pipeline implements a simple but production‑aligned serverless ingestion and transformation workflow:
 
-Data ingestion and transformation workflows are often:
+1. **Raw JSON** is uploaded to the **ingest S3 bucket**.
+2. An **S3 Event Notification** triggers the Lambda function.
+3. Lambda:
+   - reads the raw JSON
+   - validates the schema
+   - normalizes it into three tabular datasets
+   - writes `orders.csv`, `customers.csv`, and `items.csv` to the **processed S3 bucket**
+4. CloudWatch captures structured logs for observability.
 
-- manual
-- inconsistent
-- hard to reproduce
-- difficult to monitor
+## Mermaid Diagram
 
-This pipeline provides a repeatable, automated, serverless pattern for:
+```mermaid
+flowchart TD
 
-- ingesting raw data
-- triggering compute automatically
-- transforming data into normalized tables
-- storing processed outputs
-- monitoring execution with structured logs
+    A[Raw JSON Upload] --> B[Ingest S3 Bucket]
 
-## ✅ Why this exists
+    B --> C[Lambda: Read JSON]
+    C --> D[Lambda: Validate Schema]
+    D --> E[Lambda: Transform Data]
+    E --> F[Processed S3 Bucket]
 
-This project is a hands‑on demonstration of:
-
-- AWS serverless architecture
-- Terraform module usage
-- Python Lambda best practices
-- Structured CloudWatch logging
-- Automated testing with pytest
-- Real‑world pipeline design
-
-It serves as a portfolio‑ready example of platform engineering skills.
+    E --> G[CloudWatch Logs]
+```
 
 ---
 
-# 🏗️ Architecture
+# 🧠 Engineering Decisions
 
-      ┌──────────────────────┐
-      │   Raw Data Upload     │
-      │   (scripts/run...)    │
-      └──────────┬────────────┘
-                  │ S3 PutObject
-                  ▼
-      ┌──────────────────────┐
-      │   Ingest S3 Bucket    │
-      └──────────┬────────────┘
-                  │ Event Trigger
-                  ▼
-      ┌──────────────────────┐
-      │   AWS Lambda          │
-      │ - Reads raw JSON      │
-      │ - Validates schema    │
-      │ - Normalizes tables   │
-      │ - Writes CSV outputs  │
-      └──────────┬────────────┘
-                  │
-                  ▼
-      ┌──────────────────────┐
-      │ Processed S3 Bucket   │
-      │ (orders.csv,          │
-      │  customers.csv,       │
-      │  items.csv)           │
-      └──────────────────────┘
+This project maintains a full decision log in `docs/decisions.md`.  
+Below is a high‑level summary of the most impactful choices:
 
-## Logging & Monitoring
+### ✅ Tagging via `locals` instead of provider‑level `default_tags`
+
+- Explicit, portable, multi‑provider‑friendly
+- Easier to audit and override
+
+### ✅ Removed networking from the root module
+
+- Lambda + S3 + CloudWatch do not require VPC networking
+- Reduces cost, complexity, and cold‑start latency
+
+### ✅ Introduced a Python data generator
+
+- Ensures reproducible test payloads
+- Enables rapid iteration without manual JSON crafting
+
+### ✅ Restructured Lambda directory
+
+- Clear separation of concerns (`handlers/`, `utils/`, `models/`, `config/`)
+- Easier testing and future expansion
+
+### ✅ Adopted `aws-vault` for secure credential management
+
+- Eliminates long‑lived credentials
+- Provides MFA‑protected sessions
+- Works cleanly inside WSL
+
+### ✅ Standardized Terraform execution inside WSL
+
+- Faster filesystem operations
+- Cleaner output
+- Matches production Linux environments
+
+### ✅ Chose S3 → Lambda event notifications over EventBridge
+
+- Lowest latency
+- Zero cost
+- Perfect for simple ingestion pipelines
+
+### ✅ Kept Lambda outside a VPC
+
+- Faster cold starts
+- No NAT gateway cost
+- Simpler architecture
+
+### ✅ Used separate buckets for ingest vs. processed data
+
+- Clear separation of concerns
+- Easier debugging and auditing
+
+### ✅ Set CloudWatch log retention explicitly
+
+- Prevents infinite log growth
+- Reduces long‑term cost
+
+### ✅ Fixed naming conventions via `locals`
+
+- Stable resource names
+- Prevents log group churn
+
+### ✅ Destroy infra after each test cycle
+
+- Keeps AWS bill near zero
+- Reinforces cost‑conscious engineering habits
+
+---
+
+# 🧱 Infrastructure Breakdown
+
+## Terraform Modules & Resources
+
+### S3 Buckets
+
+- **Ingest bucket**
+
+  - Receives raw JSON
+  - Triggers Lambda via event notifications
+
+- **Processed bucket**
+  - Stores normalized CSV outputs
+  - Organized under `processed/` prefix
+
+### Lambda Function
+
+- Python 3.9+
+- Modular structure:
+  - `index.py` — handler
+  - `transform.py` — normalization logic
+  - `s3_utils.py` — S3 read/write helpers
+  - `errors.py` — custom exception hierarchy
+  - `config.py` — environment/config management
+
+### IAM Roles & Policies
+
+- Least‑privilege access for:
+  - S3 read from ingest bucket
+  - S3 write to processed bucket
+  - CloudWatch logging
+
+### CloudWatch
 
 - Structured JSON logs
-- Correlation IDs (`aws_request_id`)
-- CloudWatch Insights‑friendly events
-- Error classification via custom exception hierarchy
+- Explicit retention period
+- Query‑friendly for debugging
 
 ---
 
-# 🛠 Tech Stack
+# 🧪 Testing Strategy
 
-### Infrastructure
+The test suite validates the pipeline end‑to‑end:
 
-- Terraform (S3, Lambda, IAM, event notifications)
-- AWS Cloud (S3, Lambda, CloudWatch)
+### ✅ `test_transform.py`
 
-### Application
+- Schema validation
+- CSV normalization logic
+- Edge‑case handling
 
-- Python 3.9+
-- Modular Lambda code (`lambda_function/`)
-- Custom error hierarchy
+### ✅ `test_s3_utils.py`
+
+- S3 read/write behavior using mocks
+
+### ✅ `test_index.py`
+
+- Event parsing
+- Error handling
+- Logging behavior
+
+### ✅ `test_generate_data.py`
+
+- Ensures reproducible test payloads
+
+Testing goals:
+
+- Catch regressions early
+- Validate transformations independently
+- Ensure handler logic is deterministic
+- Provide confidence before deployment
+
+---
+
+# 🧰 Local Development Workflow
+
+### 1. Generate test data
+
+```
+python src/generate_data.py
+```
+
+### 2. Deploy infrastructure
+
+```
+make deploy-infra
+```
+
+### 3. Upload raw JSON
+
+```
+make run-pipeline
+```
+
+### 4. Monitor logs
+
+```
+make monitor
+```
+
+### 5. Destroy infra when done
+
+```
+make destroy-infra
+```
+
+---
+
+# 🧭 Design Principles
+
+This project emphasizes:
+
+### ✅ **Reproducibility**
+
+- Deterministic test data
+- IaC‑driven deployments
+- Consistent naming conventions
+
+### ✅ **Clarity**
+
+- Clean directory structure
+- Explicit resource definitions
 - Structured logging
 
-### Tooling
+### ✅ **Real Business Value**
 
-- pytest for unit tests
-- Makefile for automation
-- Bash scripts for orchestration
+- Demonstrates a real ingestion → transformation → storage workflow
+- Mirrors patterns used in analytics, ETL, and event‑driven systems
+- Shows how Python + Terraform + AWS combine into a cohesive platform
 
----
+### ✅ **Linux‑First Engineering**
 
-# 📂 Project Structure
-
-      automated-serverless-pipeline/
-      ├── data/                     # Sample input data
-      ├── docs/                     # Architecture & design notes
-      ├── examples/                 # Example usage scripts
-      ├── lambda_function/          # Lambda application code
-      │   ├── config.py
-      │   ├── errors.py
-      │   ├── index.py
-      │   ├── s3_utils.py
-      │   └── transform.py
-      ├── scripts/                  # Operational scripts
-      ├── src/                      # Local utilities (data generation)
-      ├── terraform/                # IaC for AWS resources
-      ├── tests/                    # pytest suite
-      ├── Makefile                  # Automation commands
-      └── requirements.txt
+- Terraform executed inside WSL
+- Bash/Makefile automation
+- Aligns with production cloud environments
 
 ---
 
-# 🚀 Getting Started
+# 🚧 Future Engineering Enhancements
 
-## 1. Prerequisites
-
-- AWS CLI configured
-- Terraform v1.5+
-- Python 3.9+
-- Make (optional but recommended)
-
-## 2. Install dependencies
-
-      pip install -r requirements.txt
-
-## 3. Deploy infrastructure
-
-      make deploy-infra
-
-## 4. Run the pipeline
-
-      make run-pipeline
-
-## 5. Monitor logs
-
-      make monitor
+- Add CI/CD (GitHub Actions)
+- Add schema versioning
+- Introduce DynamoDB or Athena for downstream analytics
+- Add cost‑monitoring dashboards
+- Add integration tests using LocalStack
 
 ---
 
-# 🔍 How the Lambda Works
+# ✅ Summary
 
-## ✅ 1. Event Parsing
-
-Extracts bucket + key from the S3 event.
-
-## ✅ 2. S3 Read
-
-Reads raw JSON using `read_from_s3`.
-
-## ✅ 3. Transformation
-
-`transform_data()`:
-
-- validates schema
-- normalizes orders → orders.csv
-- extracts customers → customers.csv
-- expands items → items.csv
-
-## ✅ 4. S3 Write
-
-Each CSV is written to:
-
-      processed/<table>.csv
-
-## ✅ 5. Structured Logging
-
-Every log entry includes:
-
-- `event` name
-- `request_id`
-- contextual metadata
-
-Example:
-
-      {
-        "event": "TRANSFORM_SUCCESS",
-        "request_id": "abc-123",
-        "tables": ["orders", "customers", "items"]
-      }
-
----
-
-# 🧪 Testing
-
-Run the full test suite:
-
-      pytest -q
-
-Tests include:
-
-- `test_transform.py` — schema validation, CSV output
-- `test_s3_utils.py` — S3 read/write with mocks
-- `test_index.py` — Lambda handler behavior
-- `test_generate_data.py` — data generation utility
-
----
-
-# 📊 Monitoring & Troubleshooting
-
-## View logs
-
-      aws logs tail /aws/lambda/<function-name> --follow
-
-## Common issues
-
-| Issue                | Likely Cause                 | Fix                          |
-| -------------------- | ---------------------------- | ---------------------------- |
-| AccessDenied         | IAM role missing permissions | Check Terraform IAM policies |
-| No output files      | Transform error              | Check CloudWatch logs        |
-| Lambda not triggered | S3 event misconfigured       | Re‑apply Terraform           |
-
----
-
-# 📈 Future Enhancements
-
-- CI/CD pipeline (GitHub Actions or CodePipeline)
-- Support multiple data sources
-- Add DynamoDB or Athena for downstream analytics
-- Add cost monitoring + tagging
-
----
-
-# 📜 License
-
-MIT License — see [`LICENSE`](../LICENSE) for details.
-
----
-
-# 🙌 Acknowledgements
-
-This project is built as a hands‑on platform engineering exercise, combining AWS, Terraform, Python, and automated testing into a cohesive, production‑style workflow.
+This internal documentation captures the **why**, **how**, and **engineering reasoning** behind the Automated Serverless Pipeline.  
+It is designed for contributors, reviewers, and future‑you — anyone who needs to understand the system beyond the recruiter‑facing overview.
