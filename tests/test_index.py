@@ -2,8 +2,8 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 
-from lambda_function.index import handler
-from lambda_function.errors import InvalidEventError
+from src.lambda_handlers.index import handler
+from src.data_pipeline.errors import InvalidEventError
 
 
 def test_handler_success():

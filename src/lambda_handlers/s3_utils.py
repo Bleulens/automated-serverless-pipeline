@@ -10,8 +10,8 @@ Handles:
 
 import boto3
 from botocore.exceptions import ClientError
-from .errors import S3ReadError, S3WriteError
-from . import config
+from data_pipeline.errors import S3ReadError, S3WriteError
+from data_pipeline import config
 
 s3 = boto3.client("s3")
 

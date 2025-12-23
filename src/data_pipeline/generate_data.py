@@ -11,7 +11,7 @@ import uuid  # for unique IDs
 
 # External libraries
 from faker import Faker  # for realistic names, addresses, emails
-from src.data_pipeline.products import products
+from .products import products
 
 # Payment methods
 payment_methods = ["credit_card", "paypal", "bank_transfer", "gift_card"]

@@ -13,9 +13,9 @@ Coordinates:
 import json
 import logging
 
-from ..data_pipeline.s3_utils import write_processed_file, read_from_s3
-from ..data_pipeline.transform import transform_data
-from ..data_pipeline.errors import (
+from .s3_utils import write_processed_file, read_from_s3
+from data_pipeline.transform import transform_data
+from data_pipeline.errors import (
     PipelineError,
     InvalidEventError,
     S3ReadError,
@@ -23,7 +23,7 @@ from ..data_pipeline.errors import (
     TransformError,
     SchemaValidationError,
 )
-from ..data_pipeline import config
+from data_pipeline import config
 
 # Configure logging
 logger = logging.getLogger()

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from lambda_function.s3_utils import read_from_s3, write_processed_file
-from lambda_function.errors import S3ReadError, S3WriteError
+from src.data_pipeline.s3_utils import read_from_s3, write_processed_file
+from src.data_pipeline.errors import S3ReadError, S3WriteError
 
 
 @patch("lambda.s3_utils.s3")

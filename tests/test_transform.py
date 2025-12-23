@@ -1,6 +1,6 @@
 import pytest
-from lambda_function.transform import transform_data
-from lambda_function.errors import TransformError, SchemaValidationError
+from src.data_pipeline.transform import transform_data
+from src.data_pipeline.errors import TransformError, SchemaValidationError
 
 
 def test_transform_valid_json():
