@@ -90,6 +90,12 @@ def handler(event, context):
         # Step 5: Respond
         return build_response(200, {"processed_files": output_keys})
 
+    except InvalidEventError as e:
+        logger.warning(
+            {"event": "INVALID_EVENT", "request_id": request_id, "error": str(e)}
+        )
+        return build_response(400, {"error": str(e)})
+
     except Exception as e:
         logger.exception(
             {"event": "UNEXPECTED_ERROR", "request_id": request_id, "error": str(e)}

@@ -2,7 +2,7 @@ import re
 import uuid
 import json
 import pytest
-from src import generate_order, payment_methods, order_statuses
+from data_pipeline.generate_data import generate_order, payment_methods, order_statuses
 
 
 def test_generate_order_returns_dict():
