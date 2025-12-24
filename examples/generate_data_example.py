@@ -22,7 +22,7 @@ import logging  # for logging events
 
 # External libraries
 from faker import Faker  # for realistic names, addresses, emails
-from src import generate_order
+from data_pipeline.generate_data import generate_order
 
 # Configure logging
 logging.basicConfig(
