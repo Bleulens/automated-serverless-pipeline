@@ -4,7 +4,7 @@ set -euo pipefail
 
 # --- Variables ---
 
-INGEST_BUCKET=$(terraform -chdir=terraform output -raw ingest_bucket_name)
+INGEST_BUCKET=$(terraform -chdir=infra/terraform output -raw ingest_bucket_name)
 INPUT_FILE="data/sample.json"
 S3_KEY="input/sample.json"
 

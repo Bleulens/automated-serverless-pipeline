@@ -6,7 +6,7 @@ data "aws_caller_identity" "current" {}
 
 data "archive_file" "lambda" {
   type        = "zip"
-  source_file = "${path.root}/../lambda/index.py"
+  source_dir  = "${path.module}/../../src"
   output_path = "${path.module}/lambda.zip"
 }
 
@@ -14,9 +14,20 @@ data "archive_file" "lambda" {
 # Compute / Lambda Modules
 ########################################
 module "lambda" {
-  source             = "git::https://github.com/marvin-aws-modules/terraform-aws-lambda.git?ref=v1.0.1"
-  function_name      = var.function_name
+  source = "git::https://github.com/marvin-aws-modules/terraform-aws-lambda.git?ref=v1.0.1"
+
+  function_name = var.function_name
+  handler       = "lambda_handlers.index.handler"
+  runtime       = "python3.12"
+
+  # Local packaging
+  deploy_via_s3    = false
+  output_path      = data.archive_file.lambda.output_path
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+
+  timeout            = 10
   log_retention_days = var.log_retention_days
+
   policy_actions = [
     "s3:GetObject",
     "s3:PutObject",
@@ -25,22 +36,25 @@ module "lambda" {
     "logs:CreateLogStream",
     "logs:PutLogEvents"
   ]
+
   policy_resources = [
+    # Ingest bucket (read)
     "arn:aws:s3:::${module.ingest_bucket.s3_bucket_name}",
     "arn:aws:s3:::${module.ingest_bucket.s3_bucket_name}/*",
-    "arn:aws:s3:::${module.ingest_bucket.s3_bucket_name}",
-    "arn:aws:s3:::${module.ingest_bucket.s3_bucket_name}/*",
+
+    # Processed bucket (write)
+    "arn:aws:s3:::${module.processed_bucket.s3_bucket_name}",
+    "arn:aws:s3:::${module.processed_bucket.s3_bucket_name}/*",
+
+    # CloudWatch logs
     "arn:aws:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.function_name}:*"
   ]
-  source_code_hash = data.archive_file.lambda.output_base64sha256
-  source_file      = "${path.root}/../lambda/index.py"
-  output_path      = "${path.module}/lambda.zip"
-  timeout          = 10
+
   tags = {
     module = "lambda"
   }
-  default_tags = local.global_tags
 
+  default_tags = local.global_tags
 }
 
 module "ingest_bucket" {
